@@ -1,0 +1,19 @@
+<idea-plugin>
+    <id>com.mtarld.github-fm</id>
+    <name>Github Flavoured Markdown</name>
+    <vendor email="mathias.arlaud@gmail.com" url="https://github.com/mtarld">Mathias Arlaud</vendor>
+
+    <description><![CDATA[
+    <b>GitHub Flavoured Markdown</b> - Displays markdown preview with the Github flavoured style.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
