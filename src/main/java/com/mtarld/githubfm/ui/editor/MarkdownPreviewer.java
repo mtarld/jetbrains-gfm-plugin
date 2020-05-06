@@ -127,7 +127,8 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
         }
 
         //TODO Sanitize
-        String html = MarkdownHtmlGenerator.generate(document.getText());
+        String html = document.getText();
+        // String html = MarkdownHtmlGenerator.generate(document.getText());
         html = "<html><head><style>" + css + "</style></head><body class=\"markdown-body\">" + html + "</body></html>";
         panel.setText(html);
 
