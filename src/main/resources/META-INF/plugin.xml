@@ -10,7 +10,8 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <fileType name="Foo" extensions="foo" language="Foo" implementationClass="com.mtarld.githubfm.lang.FooType" fieldName="INSTANCE"/>
+        <fileEditorProvider implementation="com.mtarld.githubfm.ui.editor.MarkdownEditorWithPreviewProvider" />
     </extensions>
 
     <actions>
