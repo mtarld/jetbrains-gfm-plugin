@@ -8,15 +8,22 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url 'https://dl.bintray.com/jetbrains/markdown' }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "org.jetbrains:markdown:${markdownParserVersion}"
 }
 
 intellij {
     version '2020.1.1'
+    pluginName 'github-flavoured-markdown'
+    downloadSources false
+    updateSinceUntilBuild false
+    plugins = ['IntelliLang', 'markdown']
 }
+
 patchPluginXml {
     changeNotes """
       Add change notes here.<br>

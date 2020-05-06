@@ -11,7 +11,7 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Alarm;
-import com.mtarld.githubfm.parser.MarkdownParser;
+import com.mtarld.githubfm.html.MarkdownHtmlGenerator;
 import com.mtarld.githubfm.ui.panel.MarkdownHtmlPanel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -111,7 +111,7 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
         }
 
         //TODO Sanitize
-        panel.setText(MarkdownParser.parse(document.getText()));
+        panel.setText(MarkdownHtmlGenerator.generate(document.getText()));
 
         //TODO improve async ?
     }

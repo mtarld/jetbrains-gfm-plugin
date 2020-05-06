@@ -3,6 +3,7 @@
     <name>Github Flavoured Markdown</name>
     <vendor email="mathias.arlaud@gmail.com" url="https://github.com/mtarld">Mathias Arlaud</vendor>
 
+    <!-- TODO Depends on lang and markdown -->
     <description><![CDATA[
     <b>GitHub Flavoured Markdown</b> - Displays markdown preview with the Github flavoured style.
     ]]></description>
