@@ -56,7 +56,7 @@ public class MarkdownEditorWithPreviewProvider implements AsyncFileEditorProvide
         @Override
         public FileEditor build() {
             TextEditor editor = (TextEditor) TextEditorProvider.getInstance().createEditor(project, file);
-            FileEditor preview = new MarkdownPreviewer(file);
+            FileEditor preview = new MarkdownPreviewer(file, editor);
 
             return new TextEditorWithPreview(editor, preview);
         }

@@ -3,33 +3,21 @@ package com.mtarld.githubfm.ui.editor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorLocation;
-import com.intellij.openapi.fileEditor.FileEditorState;
+import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.IconManager;
-import com.intellij.ui.JBColor;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.Alarm;
 import com.mtarld.githubfm.html.MarkdownHtmlGenerator;
 import com.mtarld.githubfm.ui.panel.MarkdownHtmlPanel;
-import org.apache.commons.compress.utils.ByteUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor {
@@ -43,15 +31,24 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
     @NotNull
     private final MarkdownHtmlPanel panel;
 
+    private final JComponent container;
+
     @NotNull
     private final Alarm alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
 
-    public MarkdownPreviewer(@NotNull VirtualFile file) {
+    public MarkdownPreviewer(@NotNull VirtualFile file, @NotNull TextEditor editor) {
         this.document = FileDocumentManager.getInstance().getDocument(file);
         this.panel = new MarkdownHtmlPanel();
+        this.container = new JBScrollPane(this.panel);
         this.loadCss();
 
         Document document = FileDocumentManager.getInstance().getDocument(file);
+
+        editor.getEditor().getScrollingModel().addVisibleAreaListener((e) -> {
+            // FIXME : Compute scroll preserving ratio
+            this.panel.scrollRectToVisible(e.getNewRectangle());
+        });
+
         if (null != document) {
             document.addDocumentListener(new DocumentListener() {
                 @Override
@@ -69,18 +66,19 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
 
             updateHtml();
         }
+
     }
 
     @NotNull
     @Override
     public JComponent getComponent() {
-        return panel;
+        return container;
     }
 
     @Nullable
     @Override
     public JComponent getPreferredFocusedComponent() {
-        return panel;
+        return container;
     }
 
     @NotNull
@@ -111,6 +109,8 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
     public void removePropertyChangeListener(@NotNull PropertyChangeListener listener) {
     }
 
+
+
     @Nullable
     @Override
     public FileEditorLocation getCurrentLocation() {
@@ -127,9 +127,11 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
         }
 
         //TODO Sanitize
-        String html = document.getText();
-        // String html = MarkdownHtmlGenerator.generate(document.getText());
-        html = "<html><head><style>" + css + "</style></head><body class=\"markdown-body\">" + html + "</body></html>";
+        String html = MarkdownHtmlGenerator.generate(document.getText());
+
+        // FIXME : Generate proper HTML...
+        html = html.replaceAll("<body ", "<body class=\"markdown-body\" ");
+        html = "<html><head><style>" + css + "</style></head>" + html + "</html>";
         panel.setText(html);
 
         //TODO improve async ?
