@@ -10,6 +10,8 @@ import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.IconManager;
+import com.intellij.ui.JBColor;
 import com.intellij.util.Alarm;
 import com.mtarld.githubfm.html.MarkdownHtmlGenerator;
 import com.mtarld.githubfm.ui.panel.MarkdownHtmlPanel;
@@ -17,7 +19,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 
 public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor {
     private final static long PARSING_TIMEOUT = 50L;
@@ -111,7 +118,22 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
         }
 
         //TODO Sanitize
-        panel.setText(MarkdownHtmlGenerator.generate(document.getText()));
+        String html = MarkdownHtmlGenerator.generate(document.getText());
+        String css = "";
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL cssUrl = classLoader.getResource("css/primer.css");
+
+        if (null != cssUrl) {
+            File file = new File(cssUrl.getPath());
+            try {
+                css = new FileReader(file).toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        html = "<html><head><style>" + css + "</style></head><body>" + html + "</body></html>";
+        panel.setText(html);
 
         //TODO improve async ?
     }
