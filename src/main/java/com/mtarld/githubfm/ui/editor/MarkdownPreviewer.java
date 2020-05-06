@@ -15,6 +15,9 @@ import com.intellij.ui.JBColor;
 import com.intellij.util.Alarm;
 import com.mtarld.githubfm.html.MarkdownHtmlGenerator;
 import com.mtarld.githubfm.ui.panel.MarkdownHtmlPanel;
+import org.apache.commons.compress.utils.ByteUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,10 +27,15 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor {
     private final static long PARSING_TIMEOUT = 50L;
+
+    private String css;
 
     @Nullable
     private final Document document;
@@ -41,6 +49,7 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
     public MarkdownPreviewer(@NotNull VirtualFile file) {
         this.document = FileDocumentManager.getInstance().getDocument(file);
         this.panel = new MarkdownHtmlPanel();
+        this.loadCss();
 
         Document document = FileDocumentManager.getInstance().getDocument(file);
         if (null != document) {
@@ -112,29 +121,26 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
     public void dispose() {
     }
 
-    public void updateHtml() {
+    private void updateHtml() {
         if (null == document || Disposer.isDisposed(this)) {
             return;
         }
 
         //TODO Sanitize
         String html = MarkdownHtmlGenerator.generate(document.getText());
-        String css = "";
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL cssUrl = classLoader.getResource("css/primer.css");
-
-        if (null != cssUrl) {
-            File file = new File(cssUrl.getPath());
-            try {
-                css = new FileReader(file).toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        html = "<html><head><style>" + css + "</style></head><body>" + html + "</body></html>";
+        html = "<html><head><style>" + css + "</style></head><body class=\"markdown-body\">" + html + "</body></html>";
         panel.setText(html);
 
         //TODO improve async ?
     }
+
+    private void loadCss() {
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            css = IOUtils.resourceToString("/css/primer.css", StandardCharsets.UTF_8, classLoader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
