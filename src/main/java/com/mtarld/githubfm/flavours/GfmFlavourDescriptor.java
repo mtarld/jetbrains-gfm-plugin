@@ -6,5 +6,5 @@ import org.intellij.markdown.lexer.MarkdownLexer;
 import org.jetbrains.annotations.NotNull;
 
 public class GfmFlavourDescriptor extends GFMFlavourDescriptor {
-    //TODO Implement GitHub Flavour
+    //TODO Improve GitHub Flavour
 }

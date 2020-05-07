@@ -1,9 +1,11 @@
 # TODOs
-- [ ] Background color -> LOLO
-- [ ] Load CSS Primer -> LOL
+- [x] Background color
+- [x] Load CSS Primer
 - [x] Fetch only Primer's needed rules (markdown)
-- [ ] Implement descriptor -> Mat
+- [ ] Implement descriptor
+- [ ] Fix HTML and CSS
+- [ ] Code highlight
+- [ ] External HTTP calls (badges and stuff)
 - [ ] Local cache
 - [ ] HTML sanitize
-- [ ] Links
 - [ ] Replace original plugin

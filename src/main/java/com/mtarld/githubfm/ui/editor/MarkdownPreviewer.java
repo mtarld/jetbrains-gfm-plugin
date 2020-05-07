@@ -14,6 +14,7 @@ import com.mtarld.githubfm.ui.panel.MarkdownHtmlPanel;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.python.util.PythonInterpreter;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
@@ -132,6 +133,18 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
         // FIXME : Generate proper HTML...
         html = html.replaceAll("<body ", "<body class=\"markdown-body\" ");
         html = "<html><head><style>" + css + "</style></head>" + html + "</html>";
+
+        PythonInterpreter interpreter = new PythonInterpreter();
+        interpreter.set("code", "echo 'ok';");
+
+        interpreter.exec("from pygments import highlight\n"
+                + "from pygments.lexers import PythonLexer\n"
+                + "from pygments.formatters import HtmlFormatter\n"
+                + "\nresult = highlight(code, PythonLexer(), HtmlFormatter())");
+
+        // Get the result that has been set in a variable
+        System.out.println(interpreter.get("result", String.class));
+
         panel.setText(html);
 
         //TODO improve async ?
