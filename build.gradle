@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.intellij' version '0.4.18'
 }
 
-group 'com.mtarld.github-fm'
+group 'com.mtarld.githubfm'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -12,10 +12,17 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     compile "org.jetbrains:markdown:${markdownParserVersion}"
     implementation 'org.python:jython:2.7.2'
     implementation 'org.pygments:pygments:1.5'
+
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
+    // JUnit 3/4
+    testCompileOnly 'junit:junit:4.12'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
 }
 
 intellij {
@@ -23,11 +30,15 @@ intellij {
     pluginName 'github-flavoured-markdown'
     downloadSources false
     updateSinceUntilBuild false
-    plugins = ['IntelliLang', 'markdown']
+    plugins = ['IntelliLang', 'markdown', 'java']
 }
 
 patchPluginXml {
     changeNotes """
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
+}
+
+test {
+    useJUnitPlatform()
 }
