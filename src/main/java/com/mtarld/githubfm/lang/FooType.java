@@ -14,7 +14,6 @@ public class FooType extends LanguageFileType {
         super(FooLanguage.INSTANCE);
     }
 
-
     @NotNull
     @Override
     public String getName() {

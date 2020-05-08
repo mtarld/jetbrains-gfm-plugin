@@ -1,4 +1,4 @@
-package com.matarld.githubfm;
+package com.mtarld.githubfm;
 
 import com.google.common.collect.ImmutableMap;
 import com.intellij.lang.Language;

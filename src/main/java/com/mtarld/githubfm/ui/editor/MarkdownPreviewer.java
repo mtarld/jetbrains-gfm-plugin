@@ -22,19 +22,14 @@ import java.nio.charset.StandardCharsets;
 
 public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor {
     private final static long PARSING_TIMEOUT = 50L;
-
-    private String css;
-
     @Nullable
     private final Document document;
-
     @NotNull
     private final MarkdownHtmlPanel panel;
-
     private final JComponent container;
-
     @NotNull
     private final Alarm alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
+    private String css;
 
     public MarkdownPreviewer(@NotNull VirtualFile file, @NotNull TextEditor editor) {
         this.document = FileDocumentManager.getInstance().getDocument(file);
@@ -109,8 +104,6 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
     public void removePropertyChangeListener(@NotNull PropertyChangeListener listener) {
     }
 
-
-
     @Nullable
     @Override
     public FileEditorLocation getCurrentLocation() {
@@ -146,5 +139,4 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
             e.printStackTrace();
         }
     }
-
 }
