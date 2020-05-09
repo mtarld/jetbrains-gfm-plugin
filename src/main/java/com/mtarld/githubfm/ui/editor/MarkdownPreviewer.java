@@ -19,20 +19,28 @@ import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor {
     private final static long PARSING_TIMEOUT = 50L;
+
     @Nullable
     private final Document document;
+    private final VirtualFile file;
+
     @NotNull
     private final MarkdownHtmlPanel panel;
     private final JComponent container;
     @NotNull
     private final Alarm alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
-    private String css;
+
+    private List<String> css = new LinkedList<>();
 
     public MarkdownPreviewer(@NotNull VirtualFile file, @NotNull TextEditor editor) {
         this.document = FileDocumentManager.getInstance().getDocument(file);
+        this.file = file;
+
         this.panel = new MarkdownHtmlPanel();
         this.container = new JBScrollPane(this.panel);
         this.loadCss();
@@ -124,7 +132,7 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
 
         // FIXME : Generate proper HTML...
         html = html.replaceAll("<body ", "<body class=\"markdown-body\" ");
-        html = "<html><head><style>" + css + "</style></head>" + html + "</html>";
+        html = "<html><head><style>" + String.join("\n", css) + "</style></head>" + html + "</html>";
 
         panel.setText(html);
 
@@ -134,7 +142,8 @@ public class MarkdownPreviewer extends UserDataHolderBase implements FileEditor 
     private void loadCss() {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            css = IOUtils.resourceToString("/css/primer.css", StandardCharsets.UTF_8, classLoader);
+            css.add(IOUtils.resourceToString("/css/primer.css", StandardCharsets.UTF_8, classLoader));
+            css.add(IOUtils.resourceToString("/css/light.css", StandardCharsets.UTF_8, classLoader));
         } catch (IOException e) {
             e.printStackTrace();
         }

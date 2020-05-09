@@ -9,6 +9,7 @@
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.intellij.plugins.markdown</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="Foo" extensions="foo" language="Foo" implementationClass="com.mtarld.githubfm.lang.FooType" fieldName="INSTANCE"/>

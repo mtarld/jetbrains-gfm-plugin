@@ -1,21 +1,10 @@
 package com.mtarld.githubfm;
 
-import com.google.common.collect.ImmutableMap;
 import com.intellij.lang.Language;
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.fileTypes.SyntaxHighlighter;
-import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import com.mtarld.githubfm.html.MarkdownHtmlGenerator;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class JsonSyntaxHighlightTest extends LightJavaCodeInsightFixtureTestCase {
 
@@ -26,42 +15,14 @@ public class JsonSyntaxHighlightTest extends LightJavaCodeInsightFixtureTestCase
     @Test
     public void testHighlight() {
 
-        //JsonSyntaxHighlighterFactory jsonSyntaxHighlighterFactory = new JsonSyntaxHighlighterFactory();
+        final Language language = Language.findLanguageByID("JSON");
+        final String code = "{\n    \"key\": 12,\n    \"foo\": \"bar\"\n}";
 
-        final PsiFileFactory factory = PsiFileFactory.getInstance(getProject());
-        //final PsiFile jsonFile = factory.createFileFromText("test.json", Language.findLanguageByID("JSON"), "{ \"test\": 2,\n \"toto\": \"test\" }");
-        final PsiFile jsonFile = factory.createFileFromText("test.json", Language.findLanguageByID("HTML"), "<!-- test --><strong>Salut</strong>");
+        MarkdownHtmlGenerator htmlGenerator = new MarkdownHtmlGenerator();
+        //final String generated = htmlGenerator.generateHighlightedCode(language, code);
+        final String generated = "";
+        Assert.assertSame("{<br/>    <span class=\"pl-s\">\"key\"</span>: <span class=\"pl-c1\">12</span>,<br/>    <span class=\"pl-s\">\"foo\"</span>: <span class=\"pl-s\">\"bar\"</span><br/>}", generated);
 
-        System.out.println(jsonFile.getVirtualFile());
-        //SyntaxHighlighter h = jsonSyntaxHighlighterFactory.getSyntaxHighlighter(null, jsonFile.getVirtualFile());
-
-        //SyntaxHighlighter h = SyntaxHighlighterFactory.getSyntaxHighlighter(Language.findLanguageByID("JSON"), null, null);
-        SyntaxHighlighter h = SyntaxHighlighterFactory.getSyntaxHighlighter(Language.findLanguageByID("HTML"), null, null);
-
-        Lexer lexer = h.getHighlightingLexer();
-
-        Map<TextAttributesKey, String> map = ImmutableMap.of(
-                DefaultLanguageHighlighterColors.BLOCK_COMMENT, "pl-c",
-                DefaultLanguageHighlighterColors.LINE_COMMENT, "pl-c",
-                DefaultLanguageHighlighterColors.NUMBER, "pl-c1",
-                DefaultLanguageHighlighterColors.STRING, "pl-s");
-
-        StringBuilder s = new StringBuilder();
-        lexer.start(jsonFile.getText());
-        do {
-            TextAttributesKey[] attributesKeys = h.getTokenHighlights(lexer.getTokenType());
-            System.out.println(lexer.getTokenType() + " " + lexer.getTokenText() + " " + Arrays.stream(attributesKeys).map(TextAttributesKey::getFallbackAttributeKey).collect(Collectors.toList()));
-
-            if (attributesKeys.length > 0 && map.containsKey(attributesKeys[attributesKeys.length-1].getFallbackAttributeKey())) {
-                s.append(String.format("<span class=\"%s\">%s</span>", map.get(attributesKeys[attributesKeys.length-1].getFallbackAttributeKey()), lexer.getTokenText()));
-            } else {
-                s.append(lexer.getTokenText());
-            }
-
-            lexer.advance();
-        } while (lexer.getCurrentPosition().getOffset() < lexer.getBufferEnd());
-
-        System.out.println("\n\n"+s.toString());
         /*
             {"comment":"pl-c","punctuation.definition.comment":"pl-c",
             "string.comment":"pl-c",
